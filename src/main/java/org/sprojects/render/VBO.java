@@ -23,21 +23,18 @@ public class VBO {
         glDeleteBuffers(ptr);
     }
     public void buffer(
-            int type,
             FloatBuffer data
     ) {
         this.bind();
         glBufferData(type, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
     }
     public void buffer(
-            int type,
             IntBuffer data
     ) {
         this.bind();
         glBufferData(type, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
     }
     public void buffer(
-        int type,
         ByteBuffer data
     ) {
         this.bind();

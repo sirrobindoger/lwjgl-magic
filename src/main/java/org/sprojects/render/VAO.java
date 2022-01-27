@@ -1,8 +1,15 @@
 package org.sprojects.render;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.List;
+
 import static org.lwjgl.opengl.GL33.*;
 public class VAO {
     int self;
+    List<VAO> vaoList;
     public VAO() {
         self = glGenVertexArrays();
     }
@@ -15,6 +22,18 @@ public class VAO {
     }
     public void unbind(){
         glBindVertexArray(0);
+    }
+    public void addBuffer(int type, IntBuffer data){
+        VBO buffer = new VBO(type, false);
+        buffer.buffer(data);
+    }
+    public void addBuffer(int type, FloatBuffer data){
+        VBO buffer = new VBO(type, false);
+        buffer.buffer(data);
+    }
+    public void addBuffer(int type, ByteBuffer data){
+        VBO buffer = new VBO(type, false);
+        buffer.buffer(data);
     }
     public void setAttributes(
             int index,

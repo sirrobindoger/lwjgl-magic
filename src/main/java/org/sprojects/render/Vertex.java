@@ -14,8 +14,6 @@ public class Vertex {
     VAO vao;
     public Vertex() {
         vao = new VAO();
-        VBO vbo = new VBO(GL_ARRAY_BUFFER, false);
-        VBO ebo = new VBO(GL_ELEMENT_ARRAY_BUFFER, false);
         float[] vertices = new float[] {
                 0.5f,  0.5f, 0.0f,  // top right
                 0.5f, -0.5f, 0.0f,  // bottom right
@@ -29,15 +27,14 @@ public class Vertex {
         FloatBuffer vertex_data = BufferUtils.createFloatBuffer(vertices.length).put(vertices).flip();
         IntBuffer index_data = BufferUtils.createIntBuffer(indices.length).put(indices).flip();
         vao.bind();
-        vbo.buffer(GL_ARRAY_BUFFER, vertex_data);
-        ebo.buffer(GL_ELEMENT_ARRAY_BUFFER, index_data);
+        vao.addBuffer(GL_ARRAY_BUFFER, vertex_data);
+        vao.addBuffer(GL_ELEMENT_ARRAY_BUFFER,index_data);
         vao.setAttributes(0,3,GL_FLOAT,0,0);
         shaderProgram = Shader.ShaderProgram(vertex_file, frag_file);
-
+        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
     }
     public void draw() {
         glUseProgram(shaderProgram);
-
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT,0);
 
     }
