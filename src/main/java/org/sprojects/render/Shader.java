@@ -8,19 +8,17 @@ import java.io.InputStreamReader;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
-public class ShaderProgram {
-    int ptr;
-    public ShaderProgram(String vertexFile, String fragFile) {
+public class Shader {
+    public static int ShaderProgram(String vertexFile, String fragFile) {
         // get out shaders and set them up
         int vertex_shader = loadShader(vertexFile, GL_VERTEX_SHADER);
         int frag_shader = loadShader(fragFile, GL_FRAGMENT_SHADER);
         // use our shader program when we want to render an object
-        ptr = linkShaders(vertex_shader, frag_shader);
+        return linkShaders(vertex_shader, frag_shader);
     }
 
-    private static int loadShader(String file, int type) {
+    public static int loadShader(String file, int type) {
         // Retrieve glsl file and convert it into string
         StringBuilder shaderSource = new StringBuilder();
         try {
@@ -48,7 +46,7 @@ public class ShaderProgram {
         }
         return vertexShader;
     }
-    private static int linkShaders(int shaderOne, int shaderTwo) {
+    public static int linkShaders(int shaderOne, int shaderTwo) {
         int shaderProgram = glCreateProgram();
         glAttachShader(shaderProgram, shaderOne);
         glAttachShader(shaderProgram, shaderTwo);
