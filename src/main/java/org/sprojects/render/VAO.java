@@ -1,15 +1,11 @@
 package org.sprojects.render;
 
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.List;
+
 
 import static org.lwjgl.opengl.GL33.*;
 public class VAO {
     int self;
-    List<VAO> vaoList;
+    Shader shader;
     public VAO() {
         self = glGenVertexArrays();
     }
@@ -20,19 +16,25 @@ public class VAO {
     public void bind() {
         glBindVertexArray(self);
     }
+    public void bindShader() {glUseProgram(shader.id);};
+    public void bindAndUseShader() {glBindVertexArray(self); glUseProgram(shader.id);}
     public void unbind(){
         glBindVertexArray(0);
     }
-    public void addBuffer(int type, IntBuffer data){
-        VBO buffer = new VBO(type, false);
+    public void addShader(String vertex, String frag) {shader = new Shader(vertex,frag);};
+    public void addBuffer(int type, int[] data){
+        bind();
+        Buffer buffer = new Buffer(type, false);
         buffer.buffer(data);
     }
-    public void addBuffer(int type, FloatBuffer data){
-        VBO buffer = new VBO(type, false);
+    public void addBuffer(int type, float[] data){
+        bind();
+        Buffer buffer = new Buffer(type, false);
         buffer.buffer(data);
     }
-    public void addBuffer(int type, ByteBuffer data){
-        VBO buffer = new VBO(type, false);
+    public void addBuffer(int type, byte[] data){
+        bind();
+        Buffer buffer = new Buffer(type, false);
         buffer.buffer(data);
     }
     public void setAttributes(
@@ -42,7 +44,7 @@ public class VAO {
             int stride,
             int offset
     ) {
-
+        bind();
         switch (type) {
             case GL_BYTE:
             case GL_UNSIGNED_BYTE:

@@ -2,16 +2,18 @@ package org.sprojects.render;
 
 
 
+import org.lwjgl.BufferUtils;
+
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL33.*;
-public class VBO {
+public class Buffer {
     int type;
     boolean dynamic;
     int ptr;
-    public VBO(int pType, boolean pDynamic) {
+    public Buffer(int pType, boolean pDynamic) {
         type = pType;
         dynamic = pDynamic;
         ptr = glGenBuffers();
@@ -23,21 +25,21 @@ public class VBO {
         glDeleteBuffers(ptr);
     }
     public void buffer(
-            FloatBuffer data
+            float[] data
     ) {
         this.bind();
-        glBufferData(type, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+        glBufferData(type, BufferUtils.createFloatBuffer(data.length).put(data).flip(), dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
     }
     public void buffer(
-            IntBuffer data
+            int[] data
     ) {
         this.bind();
-        glBufferData(type, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+        glBufferData(type, BufferUtils.createIntBuffer(data.length).put(data).flip(), dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
     }
     public void buffer(
-        ByteBuffer data
+        byte[] data
     ) {
         this.bind();
-        glBufferData(type, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+        glBufferData(type, BufferUtils.createByteBuffer(data.length).put(data).flip(), dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
     }
 }
