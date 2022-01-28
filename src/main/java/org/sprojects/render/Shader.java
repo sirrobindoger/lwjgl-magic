@@ -5,11 +5,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
+import static org.lwjgl.opengl.GL33.GL_FALSE;
+import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.opengl.GL33.glGetShaderInfoLog;
 
 public class Shader {
+    int id;
+
+    public Shader(String vert, String frag) {
+        id = ShaderProgram(vert, frag);
+    }
+    public void use() {
+        glUseProgram(id);
+    }
+    public void setBool(String name, boolean value) {
+        glUniform1i(glGetUniformLocation(id, name), value ? 1 : 0);
+    }
+    public void setInt(String name, int value) {
+        glUniform1i(glGetUniformLocation(id, name), value);
+    }
+    public void setFloat(String name, float value){
+        glUniform1f(glGetUniformLocation(id,name),value);
+    }
     public static int ShaderProgram(String vertexFile, String fragFile) {
         // get out shaders and set them up
         int vertex_shader = loadShader(vertexFile, GL_VERTEX_SHADER);

@@ -42,6 +42,7 @@ public class VAO {
             int stride,
             int offset
     ) {
+
         switch (type) {
             case GL_BYTE:
             case GL_UNSIGNED_BYTE:
