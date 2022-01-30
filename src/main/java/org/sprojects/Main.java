@@ -1,6 +1,5 @@
 package org.sprojects;
 
-import org.sprojects.render.Vertex;
 import org.sprojects.render.Window;
 
 public class Main {

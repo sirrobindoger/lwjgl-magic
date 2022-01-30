@@ -1,5 +1,7 @@
 package org.sprojects.render;
 
+import org.joml.Matrix4f;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +21,19 @@ public class Shader {
         glUseProgram(id);
     }
     public void setBool(String name, boolean value) {
+        use();
         glUniform1i(glGetUniformLocation(id, name), value ? 1 : 0);
     }
     public void setInt(String name, int value) {
+        use();
         glUniform1i(glGetUniformLocation(id, name), value);
     }
+    public void setMatrix4f(String name, Matrix4f value) {
+        use();
+        glUniformMatrix4fv(glGetUniformLocation(id, name), false, value.get(new float[16]));
+    }
     public void setFloat(String name, float value){
+        use();
         glUniform1f(glGetUniformLocation(id,name),value);
     }
     public static int ShaderProgram(String vertexFile, String fragFile) {
@@ -39,7 +48,7 @@ public class Shader {
         // Retrieve glsl file and convert it into string
         StringBuilder shaderSource = new StringBuilder();
         try {
-            InputStream is = Vertex.class.getResourceAsStream(file);
+            InputStream is = Test.class.getResourceAsStream(file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             String line;
             while ((line = reader.readLine()) != null) {

@@ -3,10 +3,11 @@ package org.sprojects.render;
 
 
 import static org.lwjgl.opengl.GL33.*;
-public class VAO {
+public class VertexArray {
     int self;
     Shader shader;
-    public VAO() {
+    Texture texture;
+    public VertexArray() {
         self = glGenVertexArrays();
     }
 
@@ -22,20 +23,27 @@ public class VAO {
         glBindVertexArray(0);
     }
     public void addShader(String vertex, String frag) {shader = new Shader(vertex,frag);};
-    public void addBuffer(int type, int[] data){
+    public Buffer addBuffer(int type, int[] data){
         bind();
         Buffer buffer = new Buffer(type, false);
         buffer.buffer(data);
+        return buffer;
     }
-    public void addBuffer(int type, float[] data){
+    public Buffer addBuffer(int type, float[] data){
         bind();
         Buffer buffer = new Buffer(type, false);
         buffer.buffer(data);
+        return buffer;
     }
-    public void addBuffer(int type, byte[] data){
+    public Buffer addBuffer(int type, byte[] data){
         bind();
         Buffer buffer = new Buffer(type, false);
         buffer.buffer(data);
+        return buffer;
+    }
+    public Texture addTexture(String filepath) {
+        texture = new Texture(filepath);
+        return texture;
     }
     public void setAttributes(
             int index,

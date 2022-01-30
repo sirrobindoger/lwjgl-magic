@@ -14,7 +14,9 @@ public class Texture {
     int self;
     public Texture(String filepath) {
         int[] rawWidth = new int[1], rawHeight = new int[1], rawnrChannels = new int[1];
-        data = stbi_load(getClass().getClassLoader().getResource(filepath).getFile(), rawWidth, rawHeight, rawnrChannels, 0);
+        String newPath = getClass().getClassLoader().getResource(filepath).getPath();
+        stbi_set_flip_vertically_on_load(true);
+        data = stbi_load(new File(newPath).getAbsolutePath(), rawWidth, rawHeight, rawnrChannels, 0);
         width = rawWidth[0]; height = rawHeight[0]; nrChannels = rawnrChannels[0];
         self = glGenTextures();
         bind();
@@ -24,9 +26,10 @@ public class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
     public void bind() {glBindTexture(GL_TEXTURE_2D, self);}
-    public void mipmap() {
+    public void bind(int layer) {glActiveTexture(layer); glBindTexture(GL_TEXTURE_2D, self);}
+    public void mipmap(boolean hasAlpha) {
         bind();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width,height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width,height, 0, hasAlpha? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
         stbi_image_free(data);
     }
