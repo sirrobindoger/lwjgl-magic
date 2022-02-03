@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL33.glGetShaderInfoLog;
 
 public class Shader {
     int id;
-
+    float[] matrixBuffer = new float[16];
     public Shader(String vert, String frag) {
         id = ShaderProgram(vert, frag);
     }
@@ -30,7 +30,7 @@ public class Shader {
     }
     public void setMatrix4f(String name, Matrix4f value) {
         use();
-        glUniformMatrix4fv(glGetUniformLocation(id, name), false, value.get(new float[16]));
+        glUniformMatrix4fv(glGetUniformLocation(id, name), false, value.get(matrixBuffer));
     }
     public void setFloat(String name, float value){
         use();
