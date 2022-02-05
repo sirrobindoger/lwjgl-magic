@@ -80,7 +80,7 @@ public class Test {
         vertexArray.addBuffer(GL_ARRAY_BUFFER, vertices);
         //vertexArray.addBuffer(GL_ELEMENT_ARRAY_BUFFER, indices);
         vertexArray.setAttributes(0,3,GL_FLOAT,5*Float.BYTES,0);
-        vertexArray.setAttributes(1,3,GL_FLOAT,5*Float.BYTES,3*Float.BYTES);
+        vertexArray.setAttributes(1,2,GL_FLOAT,5*Float.BYTES,3*Float.BYTES);
         vertexArray.addShader(vertex_file,frag_file);
         vertexArray.addTexture("images/wall.jpg");
         vertexArray.texture.mipmap(false);

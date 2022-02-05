@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL33.GL_FALSE;
 import static org.lwjgl.opengl.GL33.*;
@@ -14,27 +15,53 @@ import static org.lwjgl.opengl.GL33.glGetShaderInfoLog;
 public class Shader {
     int id;
     float[] matrixBuffer = new float[16];
+    HashMap<String, Integer> uniformLoc;
     public Shader(String vert, String frag) {
         id = ShaderProgram(vert, frag);
+        uniformLoc = new HashMap<String,Integer>();
     }
     public void use() {
         glUseProgram(id);
     }
     public void setBool(String name, boolean value) {
         use();
-        glUniform1i(glGetUniformLocation(id, name), value ? 1 : 0);
+        if (uniformLoc.containsKey(name)) {
+            glUniform1i(uniformLoc.get(name), value ? 1 : 0);
+            return;
+        }
+        int location = glGetUniformLocation(id, name);
+        uniformLoc.put(name, location);
+        glUniform1i(location, value ? 1 : 0);
     }
     public void setInt(String name, int value) {
         use();
-        glUniform1i(glGetUniformLocation(id, name), value);
+        if (uniformLoc.containsKey(name)) {
+            glUniform1i(uniformLoc.get(name), value);
+            return;
+        }
+        int location = glGetUniformLocation(id, name);
+        uniformLoc.put(name, location);
+        glUniform1i(location, value);
     }
     public void setMatrix4f(String name, Matrix4f value) {
         use();
-        glUniformMatrix4fv(glGetUniformLocation(id, name), false, value.get(matrixBuffer));
+        if (uniformLoc.containsKey(name)) {
+            glUniformMatrix4fv(uniformLoc.get(name),false, value.get(matrixBuffer));
+            return;
+        }
+        int location = glGetUniformLocation(id, name);
+        uniformLoc.put(name, location);
+        glUniformMatrix4fv(location, false, value.get(matrixBuffer));
     }
     public void setFloat(String name, float value){
         use();
-        glUniform1f(glGetUniformLocation(id,name),value);
+        if (uniformLoc.containsKey(name)) {
+            glUniform1f(uniformLoc.get(name), value);
+            return;
+        }
+        int location = glGetUniformLocation(id, name);
+        uniformLoc.put(name, location);
+        glUniform1f(location, value);
     }
     public static int ShaderProgram(String vertexFile, String fragFile) {
         // get out shaders and set them up
