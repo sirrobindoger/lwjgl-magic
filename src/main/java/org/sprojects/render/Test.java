@@ -1,6 +1,7 @@
 package org.sprojects.render;
 
 
+
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -16,6 +17,13 @@ public class Test {
     Matrix4f view;
     Matrix4f ortho;
     Matrix4f projection;
+    Vector3f cameraPos;
+    Vector3f cameraUp;
+    Vector3f cameraFront;
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+    float cameraSpeed = 0.0f;
+
     int modelLoc;
     int viewLoc;
     int projLoc;
@@ -98,9 +106,6 @@ public class Test {
             100f
         );
         model = new Matrix4f().identity();
-
-        view = new Matrix4f().identity();
-        view.translate(0.0f, 0.0f, -2.0f);
         projection = new Matrix4f();
         projection.perspective(
                 45.0f,
@@ -112,15 +117,29 @@ public class Test {
         viewLoc = glGetUniformLocation(vertexArray.shader.id, "view");
         projLoc = glGetUniformLocation(vertexArray.shader.id, "projection");
 
-        vertexArray.shader.setMatrix4f("view", view);
+
         vertexArray.shader.setMatrix4f("projection", projection);
         glEnable(GL_DEPTH_TEST);
+        cameraPos = new Vector3f(0.0f, 0.0f,  3.0f);
+        cameraFront = new Vector3f(0.0f, 0.0f, -1.0f);
+        cameraUp =  new Vector3f(0.0f, 1.0f,  0.0f);
+        view = new Matrix4f();
+
+
     }
     public void draw() {
+        float currentFrame = (float)glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         vertexArray.texture.bind(GL_TEXTURE0);
         tex.bind(GL_TEXTURE1);
+
         vertexArray.bindAndUseShader();
 
+        view = new Matrix4f().lookAt(cameraPos, new Vector3f(cameraPos).add(cameraFront), cameraUp);
+
+        vertexArray.shader.setMatrix4f("view", view);
         for (int i = 0; i < cubePos.length; i++) {
             model.identity();
             model.translate(cubePos[i]);
@@ -129,5 +148,18 @@ public class Test {
             vertexArray.shader.setMatrix4f("model", model);
             glDrawArrays(GL_TRIANGLES, 0,36);
         }
+    }
+    public void Input(long window) {
+        cameraSpeed = 1.5f * deltaTime;
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            cameraPos.add(new Vector3f(cameraFront).mul(cameraSpeed));
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            cameraPos.sub(new Vector3f(cameraFront).mul(cameraSpeed));
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            cameraPos.sub(  new Vector3f( new Vector3f(cameraFront).cross(cameraUp) ).normalize().mul(cameraSpeed)  );
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            cameraPos.add(  new Vector3f( new Vector3f(cameraFront).cross(cameraUp) ).normalize().mul(cameraSpeed)  );
+
     }
 }

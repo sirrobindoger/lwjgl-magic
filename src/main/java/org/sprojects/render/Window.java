@@ -48,8 +48,10 @@ public class Window {
         glViewport(0,0,800,600);
         glfwSetFramebufferSizeCallback(ptr, (long win, int w, int h) -> glViewport(0,0,w,h));
         tri = new Test();
+
     }
     public void render(){
+        tri.Input(ptr);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         tri.draw();
