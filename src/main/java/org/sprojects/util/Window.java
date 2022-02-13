@@ -1,6 +1,8 @@
-package org.sprojects.render;
+package org.sprojects.util;
 
+import com.google.common.eventbus.EventBus;
 import org.lwjgl.opengl.GL;
+import org.sprojects.render.Test;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL33.*;
@@ -16,12 +18,14 @@ public class Window {
     public int width;
     public int height;
     public long ptr;
+    public EventBus eventRegistry;
     // constructors
     private Window(int w, int h, String name) {
         width = w;
         height = h;
         displayName = name;
         ptr = -1;
+        eventRegistry = new EventBus();
     }
     public static Window Window(int w, int h, String name) {
         if (instance == null) {
@@ -47,14 +51,10 @@ public class Window {
         GL.createCapabilities();
         glViewport(0,0,800,600);
         glfwSetFramebufferSizeCallback(ptr, (long win, int w, int h) -> glViewport(0,0,w,h));
-        tri = new Test();
-
     }
-    public void render(){
-        tri.Input(ptr);
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    public void clearBuffers(){
+        glClearColor(0,0,0, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        tri.draw();
         glfwSwapBuffers(ptr);
         glfwPollEvents();
     }

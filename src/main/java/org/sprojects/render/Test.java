@@ -5,12 +5,14 @@ package org.sprojects.render;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 
 import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.glfw.GLFW.*;
 public class Test {
     static final String vertex_file = "/shaders/vt_triangle.glsl";
     static final String frag_file = "/shaders/fs_triangle.glsl";
+
     VertexArray vertexArray;
     Texture tex;
     Matrix4f model;
@@ -23,8 +25,12 @@ public class Test {
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
     float cameraSpeed = 0.0f;
-
-    int modelLoc;
+    float lastX = 400;
+    float lastY = 300;
+    final float sensitivity = 0.1f;
+    float yaw = -90.0f;
+    float pitch = 0.0f;
+    boolean wireFrame = false;
     int viewLoc;
     int projLoc;
     Vector3f[] cubePos;
@@ -160,6 +166,29 @@ public class Test {
             cameraPos.sub(  new Vector3f( new Vector3f(cameraFront).cross(cameraUp) ).normalize().mul(cameraSpeed)  );
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
             cameraPos.add(  new Vector3f( new Vector3f(cameraFront).cross(cameraUp) ).normalize().mul(cameraSpeed)  );
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+            wireFrame = !wireFrame;
+            glPolygonMode(GL_FRONT_AND_BACK, wireFrame ? GL_LINE : GL_FILL);
 
+    }
+    public void Mouse(long window, double xpos, double ypos) {
+        float xoffset = (float)xpos - lastX;
+        float yoffset = lastY - (float)ypos;
+        lastX = (float)xpos;
+        lastY = (float)ypos;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
+        yaw   += xoffset;
+        pitch += yoffset;
+
+        if(pitch > 89.0f)
+            pitch = 89.0f;
+        if(pitch < -89.0f)
+            pitch = -89.0f;
+        Vector3f dir = new Vector3f();
+        dir.x = Math.cos( Math.toRadians(yaw) ) *  Math.cos( Math.toRadians(pitch) );
+        dir.y = Math.sin( Math.toRadians(pitch) );
+        dir.z = Math.sin( Math.toRadians(yaw) ) * Math.cos( Math.toRadians(pitch) );
+        cameraFront = dir.normalize();
     }
 }

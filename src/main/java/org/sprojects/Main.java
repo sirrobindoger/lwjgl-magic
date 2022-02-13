@@ -1,6 +1,6 @@
 package org.sprojects;
 
-import org.sprojects.render.Window;
+import org.sprojects.util.Window;
 
 public class Main {
     static Window window;
@@ -9,9 +9,8 @@ public class Main {
         window.initRendering();
 
         while (!window.shouldClose()){
-            window.render();
+            window.initRendering();
         }
-
 
     }
 }
